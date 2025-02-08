@@ -2,8 +2,9 @@
   "name": "dota2personalanalitics",
   "version": "1.0.0",
   "main": "src/main.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node src/main.js"
   },
   "repository": {
     "type": "git",
@@ -15,5 +16,11 @@
     "url": "https://github.com/A-I-SMBD/dota2personalAnalitics/issues"
   },
   "homepage": "https://github.com/A-I-SMBD/dota2personalAnalitics#readme",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "dota2-gsi": "^1.0.2",
+    "express": "^4.21.2",
+    "steamapi": "^3.0.12",
+    "winston": "^3.17.0"
+  }
 }
