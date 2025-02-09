@@ -40,13 +40,13 @@ Also, please note that the MVP writing of the program will also use AI text gene
 1. **Clone the repository:**
 
    ```sh
-   git clone https://github.com/A-I-SMBD/dota2personalAnalitics.git
+   git clone https://github.com/A-I-SMBD/dota2personalAnalytics.git
    ```
 
 2. **Navigate to the project directory:**
 
    ```sh
-   cd dota2personalAnalitics
+   cd dota2personalAnalytics
    ```
 
 3. **Install Node.js dependencies:**
