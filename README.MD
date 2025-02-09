@@ -1,4 +1,4 @@
-# Dota2PersonalAnalitics
+# Dota2PersonalAnalytics
 
 ## Описание проекта
 
