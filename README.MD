@@ -1,82 +1,83 @@
 # Dota2PersonalAnalytics
 
-## Описание проекта
+## Description
 
-Проект предназначен для персональной помощи по игре и развитию в Dota2 за счёт различных IT инструментов и аналитики.
+The project is designed to provide personal assistance in playing and developing Dota2 using various IT tools and analytics.
 
-## Содержание
+## Table of Contents
 
-- [О проекте](#о-проекте)
-- [Установка](#установка)
-- [Вклад](#вклад)
-- [Лицензия](#лицензия)
+- [Description](#description)
+- [Installation](#installation)
+- [Contributing](#contributing)
+- [License](#license)
 
-## О проекте
+## Description
 
-Буду честен. Мне просто надоело, что существует множество ресурсов-аггрегаторов статистики, аналитики и т.п., с помощью которых предоставляется информация о том как играть в доту. Но не со всеми концепциями я могу быть согласен. Поэтому этот проект - это моё представление о том, как необходимо анализировать статистику игрока и различных метовых героев/предметов.
+To be honest, I'm tired of the fact that there are many resources that aggregate statistics, analytics, and other information on how to play Dota2. However, I don't agree with all the concepts. Therefore, this project is my interpretation of how player statistics and various key heroes/items should be analyzed.
 
-Основной момент в том, что проект будет развиваться по мере появления необходимости в новых функциях, когда я играю в Dota2.
-Пока что реализован только функционал по тренировке модели, которая должна будет по скрину из игры на момент драфта героев определять кого пикнули. После будет предлагаться как в Dota+ кого пикнуть лучше всего, с учётом не только сухой статистики, но так же изначального потенциала героя относительно его способностей. Например, как Legion Commander может контрить Bristleback за счёт своего ультимейта. Так же на первое время планируется составление билдов относительно драфта.
+The main point is that the project will evolve as new functions are needed while playing Dota2.
 
-Самое главное советую вам учесть, что я профан в разработке ИИ моделей. Поэтому большинство кода в .py файлах будут написаны с помощью разных ИИ генераторов текста.
+Currently, only the functionality for training a model that should identify who was picked based on a screenshot from the draft moment has been implemented. After that, it will suggest who to pick better in Dota+ based not only on raw statistics but also on the initial potential of the hero relative to his abilities. For example, how Legion Commander can counter Bristleback due to his ultimate. Also, for the time being, it is planned to compile builds relative to the draft.
 
-Так же прошу учесть, что MVP написание программы тоже будет с использованием ИИ генераторов текста. Чтобы как можно быстрее получит рабочую версию с необходимым функционалом. А уже после будет ручная отладка кода и алгоритма.
+The most important thing is to note that I am a beginner in developing AI models. Therefore, most of the code in the .py files will be written using different AI text generators.
 
-# Установка и запуск проекта
+Also, please note that the MVP writing of the program will also use AI text generators to get a working version with the necessary functionality as quickly as possible. After that, there will be manual debugging of the code and algorithm.
 
-## Предварительные требования
+# Installation and Running the Project
 
-- [Node.js](https://nodejs.org/) (версия 18+)
-- [Python](https://www.python.org/) (версия 3.8+)
+## Prerequisites
+
+- [Node.js](https://nodejs.org/) (version 18+)
+- [Python](https://www.python.org/) (version 3.8+)
 - [Git](https://git-scm.com/)
 - [TensorFlow](https://www.tensorflow.org/)
 - [Pandas](https://pandas.pydata.org/)
 - [NumPy](https://numpy.org/)
 - [Scikit-learn](https://scikit-learn.org/stable/)
 
-## Установка
+## Installation
 
-1. **Клонируйте репозиторий:**
+1. **Clone the repository:**
 
    ```sh
    git clone https://github.com/A-I-SMBD/dota2personalAnalitics.git
    ```
 
-2. **Перейдите в директорию проекта:**
+2. **Navigate to the project directory:**
 
    ```sh
    cd dota2personalAnalitics
    ```
 
-3. **Установите зависимости Node.js:**
+3. **Install Node.js dependencies:**
 
    ```sh
    npm install
    ```
 
-4. **Установите зависимости Python:**
+4. **Install Python dependencies:**
 
-   прошу вас в этом самостоятельно разобраться. Sorry
+   Please figure this out yourself. Sorry
 
-5. **Запустите сервер Node.js:**
+5. **Run the Node.js server:**
 
    ```sh
    npm start
    ```
 
-6. **Запустите скрипт Python для обучения модели:**
+6. **Run the Python script to train the model:**
 
    ```sh
    python heroes-detection-model.generator.py
    ```
 
-## Вклад
+## Contributing
 
-1. Создайте форк репозитория.
-2. Клонируйте форк на ваш локальный компьютер.
-3. Создайте новую ветку для ваших изменений.
-4. Внесите изменения и создайте pull request.
+1. Fork the repository.
+2. Clone the fork to your local machine.
+3. Create a new branch for your changes.
+4. Make your changes and create a pull request.
 
-## Лицензия
+## License
 
-Проект распространяется под лицензией MIT. Полное описание лицензии находится в файле [LICENSE](LICENSE).
+The project is licensed under the MIT License. A full description of the license is available in the [LICENSE](LICENSE) file.
