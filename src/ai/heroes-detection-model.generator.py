@@ -1,91 +1,91 @@
 import tensorflow as tf
-from tensorflow.keras import layers, models
 import pandas as pd
+import numpy as np
+import os
 from sklearn.model_selection import train_test_split
-from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
-# Paths to CSV file and folder with avatars
-csv_file_path = 'heroes-avatars.annotation.csv'
-heroes_avatars_path = 'heroes-avatars-normalized'
+# Configuration
+IMAGE_SIZE = (100, 56)
+BATCH_SIZE = 32
+EPOCHS = 10
+NUM_CLASSES = 126  # Specify the number of your classes
+CSV_PATH = 'E:/Coding/pet-projects/dota2personalAnalitics/static/heroes-avatars.annotation.csv'
+IMAGES_DIR = 'E:/Coding/pet-projects/dota2personalAnalitics'
+MODEL_SAVE_PATH = 'image_classifier.keras'
 
-# Load data from CSV file
-data = pd.read_csv(csv_file_path, header=None, names=['image_path', 'hero_name'])
+# Load and prepare data
+def load_data(csv_path):
+    df = pd.read_csv(csv_path)
+    filenames = [os.path.join(IMAGES_DIR, fname) for fname in df['filepath']]
+    labels = df['hero'].values
 
-# Count the number of unique heroes
-num_classes = data['hero_name'].nunique()
-print(f"Number of unique heroes: {num_classes}")
+    # Convert labels to integers if they are strings
+    label_map = {label: idx for idx, label in enumerate(np.unique(labels))}
+    labels = np.array([label_map[label] for label in labels])
 
-# Convert labels to numerical values
-label_map = {hero: idx for idx, hero in enumerate(data['hero_name'].unique())}
-data['label'] = data['hero_name'].map(label_map)
+    return train_test_split(filenames, labels, test_size=0.2, random_state=42)
 
-# Split data into training and testing sets with stratification
-train_data, test_data = train_test_split(
-    data,
-    test_size=0.2,
-    random_state=42,
-    stratify=data['label']  # Добавляем стратификацию
-)
+def parse_image(filename, label):
+    image = tf.io.read_file(filename)
+    image = tf.image.decode_jpeg(image, channels=3)
+    image = tf.image.resize(image, IMAGE_SIZE)
+    image = tf.keras.applications.resnet50.preprocess_input(image)
+    return image, label
 
-# Create data generators
-train_datagen = ImageDataGenerator(rescale=1./255)
-test_datagen = ImageDataGenerator(rescale=1./255)
+def create_dataset(filenames, labels):
+    dataset = tf.data.Dataset.from_tensor_slices((filenames, labels))
+    dataset = dataset.shuffle(len(filenames))
+    dataset = dataset.map(parse_image, num_parallel_calls=tf.data.AUTOTUNE)
+    dataset = dataset.batch(BATCH_SIZE)
+    dataset = dataset.prefetch(tf.data.AUTOTUNE)
+    return dataset
 
-# Убираем преобразование обратно в hero_name! Оставляем числовые метки
-# Генераторы будут автоматически преобразовывать их в one-hot encoding
+# Create model
+def build_model():
+    base_model = tf.keras.applications.ResNet50(
+        include_top=False,
+        weights='imagenet',
+        input_shape=IMAGE_SIZE + (3,)
+    )
+    base_model.trainable = False  # Freeze the base model
 
-# Create generators
-train_generator = train_datagen.flow_from_dataframe(
-    dataframe=train_data,
-    directory=heroes_avatars_path,
-    x_col='image_path',
-    y_col='label',  # Теперь используем числовые метки
-    target_size=(110, 62),
-    batch_size=32,
-    class_mode='categorical'  # Автоматически создаст one-hot encoding
-)
+    inputs = tf.keras.Input(shape=IMAGE_SIZE + (3,))
+    x = base_model(inputs, training=False)
+    x = tf.keras.layers.GlobalAveragePooling2D()(x)
+    x = tf.keras.layers.Dense(256, activation='relu')(x)
+    x = tf.keras.layers.Dropout(0.5)(x)
+    outputs = tf.keras.layers.Dense(NUM_CLASSES, activation='softmax')(x)
 
-test_generator = test_datagen.flow_from_dataframe(
-    dataframe=test_data,
-    directory=heroes_avatars_path,
-    x_col='image_path',
-    y_col='label',  # Теперь используем числовые метки
-    target_size=(110, 62),
-    batch_size=32,
-    class_mode='categorical'
-)
+    return tf.keras.Model(inputs, outputs)
 
-# Проверяем количество классов обнаруженных генераторами
-print(f"Train classes: {train_generator.num_classes}")
-print(f"Test classes: {test_generator.num_classes}")
+# Main process
+def main():
+    # Load and prepare data
+    X_train, X_val, y_train, y_val = load_data(CSV_PATH)
 
-# Убедимся что количество классов совпадает с ожидаемым
-assert train_generator.num_classes == num_classes, "Количество классов в train не совпадает!"
-assert test_generator.num_classes == num_classes, "Количество классов в test не совпадает!"
+    train_dataset = create_dataset(X_train, y_train)
+    val_dataset = create_dataset(X_val, y_val)
 
-# Create the model
-model = models.Sequential()
-model.add(layers.Input(shape=(110, 62, 3)))  # Явно задаем Input слой
-model.add(layers.Conv2D(32, (3, 3), activation='relu'))
-model.add(layers.MaxPooling2D((2, 2)))
-model.add(layers.Conv2D(64, (3, 3), activation='relu'))
-model.add(layers.MaxPooling2D((2, 2)))
-model.add(layers.Conv2D(128, (3, 3), activation='relu'))
-model.add(layers.MaxPooling2D((2, 2)))
-model.add(layers.Flatten())
-model.add(layers.Dense(128, activation='relu'))
-model.add(layers.Dense(num_classes, activation='softmax'))
+    # Create model
+    model = build_model()
 
-model.compile(optimizer='adam', 
-              loss='categorical_crossentropy', 
-              metrics=['accuracy'])
+    # Compile model
+    model.compile(
+        optimizer=tf.keras.optimizers.Adam(learning_rate=1e-3),
+        loss='sparse_categorical_crossentropy',
+        metrics=['accuracy']
+    )
 
-# Train the model
-history = model.fit(
-    train_generator,
-    epochs=10,
-    validation_data=test_generator
-)
+    # Train model
+    history = model.fit(
+        train_dataset,
+        validation_data=val_dataset,
+        epochs=EPOCHS
+    )
 
-# Save the model
-model.save('heroes_detection_model.h5')
+    # Save model
+    model.save(MODEL_SAVE_PATH)
+    print(f'Model saved to {MODEL_SAVE_PATH}')
+
+if __name__ == '__main__':
+    main()

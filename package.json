@@ -18,9 +18,10 @@
   "homepage": "https://github.com/A-I-SMBD/dota2personalAnalitics#readme",
   "description": "",
   "dependencies": {
-    "dota2-gsi": "^1.0.2",
-    "express": "^4.21.2",
-    "steamapi": "^3.0.12",
+    "axios": "^1.7.9",
+    "eslint-config-turbo": "^2.4.0",
+    "jsdom": "^26.0.0",
+    "sharp": "^0.33.5",
     "winston": "^3.17.0"
   }
 }
