@@ -39,13 +39,13 @@
 1. **Клонируйте репозиторий:**
 
    ```sh
-   git clone https://github.com/A-I-SMBD/dota2personalAnalitics.git
+   git clone https://github.com/A-I-SMBD/dota2personalAnalytics.git
    ```
 
 2. **Перейдите в директорию проекта:**
 
    ```sh
-   cd dota2personalAnalitics
+   cd dota2personalAnalytics
    ```
 
 3. **Установите зависимости Node.js:**
